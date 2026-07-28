@@ -1,0 +1,6 @@
+*_lib.py
+/lib*
+/websites/chewy/_js
+*.pkl
+.env
+**/__pycache__/
