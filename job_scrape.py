@@ -7,30 +7,23 @@ def main():
     from email.mime.text import MIMEText
     from utils import add_sorting_keys
     # import scraping modules
-    from websites.goodjobs_eu.goodjobs_eu_scrape import goodjobs_eu
-    from websites.greenjobs_de.greenjobs_de_scrape import greenjobs_de
-    from websites.talents4good.talents4good_scrape import talents4good
     from websites.ipsos.ipsos_scrape import ipsos
     from websites.niq.niq_scrape import niq
     from websites.index_de.index_de_scrape import index_de
-    from websites.telekom.telekom_scrape import telekom
     from websites.ottobock.ottobock_scrape import ottobock
     from websites.recup.recup_scrape import recup
     from websites.the_female_company.the_female_company_scrape import the_female_company
 
+
     # Specify which sites to scrape and the corresponding company/platform name
     company_funcs = {
-        'Goodjobs EU': goodjobs_eu,
-        'Greenjobs DE': greenjobs_de,
-        'Talents4Good': talents4good,
-        'Ipsos': ipsos,
-        'NiQ': niq,
-        'index': index_de,
-        'Telekom': telekom,
-        'Ottobock': ottobock,
-        'RECUP': recup,
-        'The Female Company': the_female_company,
-        }
+    'Ipsos': ipsos,
+    'NiQ': niq,
+    'index': index_de,
+    'Ottobock': ottobock,
+    'RECUP': recup,
+    'The Female Company': the_female_company,
+    }
 
     # define key words for relevant (pos) and irrelevant (neg) flagging
     pos_search_terms = ["data", "analyst", "analysis", "analytics", "machine learning",
