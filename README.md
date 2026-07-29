@@ -68,5 +68,8 @@ This keeps the deduplication state persistent without needing a database or serv
 - Expand coverage with more job and internship sources.
 
 ## Credits
-
-This project started by studying an open-source job scraper pattern and was then substantially extended with new sources, custom deduplication, an Internshala scraper built from scratch, and the GitHub Actions automation layer.
+Inspired by common open-source job-scraper patterns. Substantially extended with:
+- 3 additional scraper sources beyond the original inspiration
+- Custom deduplication logic using pickle-based state caching
+- An Internshala scraper built entirely from scratch
+- Full CI/CD automation via GitHub Actions (scheduled runs, auto-commit of state)
