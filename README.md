@@ -32,8 +32,6 @@ Each scraper collects the latest postings from one source and stores the results
 ## Setup
 
 ```bash
-git clone <your-repo-url>
-cd internradar
 python -m venv .venv
 .venv\Scripts\activate
 pip install python-dotenv requests beautifulsoup4 selenium
