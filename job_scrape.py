@@ -116,25 +116,29 @@ def main():
         print("No new jobs.")
         return
     
-    # include mail account credentials from environment variables
-    load_dotenv()
-    EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
-    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    EMAIL_TO = os.getenv('EMAIL_TO')
-    
-    # set up email message
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = f'JOB ALERT ({n_new_jobs_total} new)'
-    msg['From'] = EMAIL_ADDRESS
-    msg['To'] = EMAIL_TO
-    msg.attach(MIMEText(text_body, 'plain'))
-    msg.attach(MIMEText(html_body, 'html'))
+    try:
+        # include mail account credentials from environment variables
+        load_dotenv()
+        EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
+        EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+        EMAIL_TO = os.getenv('EMAIL_TO')
 
-    # send email
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.sendmail(EMAIL_ADDRESS, EMAIL_TO, msg.as_string())
+        # set up email message
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = f'JOB ALERT ({n_new_jobs_total} new)'
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = EMAIL_TO
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+
+        # send email
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=30) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, EMAIL_TO, msg.as_string())
+    except Exception as e:
+        print(f'Error sending email: {e}')
+        return
 
     print("New jobs, email notification sent.")
 

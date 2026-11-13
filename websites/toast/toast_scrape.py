@@ -11,7 +11,9 @@ def toast():
     PARSE AND SCRAPE WEBPAGES FOR CURRENT JOB POSTINGS
     """
     # get and parse webpage
-    r = requests.get('https://careers.toasttab.com/jobs/search?page=1&country_codes%5B%5D=US').text
+    r = requests.get('https://careers.toasttab.com/jobs/search?page=1&country_codes%5B%5D=US', timeout=30)
+    r.raise_for_status()
+    r = r.text
     soup = BeautifulSoup(r, 'html.parser')
 
     # check for additional pages, i.e. job listings displayed on several pages, and store urls in list
@@ -25,7 +27,9 @@ def toast():
     current_jobs_dict = {}
     for url in urls:
         # get and parse webpage
-        r = requests.get(url).text
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        r = r.text
         soup = BeautifulSoup(r, 'html.parser')
         jobs = soup.find_all('div', class_='card-body job-search-results-card-body')
 
@@ -50,7 +54,7 @@ def toast():
     try:
         with open(f'websites/{company_name}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {} 
 
     # store current state of job postings for next execution
@@ -72,4 +76,4 @@ def toast():
     if new_filtered_jobs:
         return {job: current_jobs_dict[job] for job in new_filtered_jobs}
     else:
-        return None
+        return []

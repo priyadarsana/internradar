@@ -14,7 +14,8 @@ def ipsos():
     # get and parse webpage
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"}
     url = "https://ecqf.fa.em2.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.workLocation,requisitionList.otherWorkLocations,requisitionList.secondaryLocations,flexFieldsFacet.values,requisitionList.requisitionFlexFields&finder=findReqs;siteNumber=CX_2001,facetsList=LOCATIONS%3BWORK_LOCATIONS%3BWORKPLACE_TYPES%3BTITLES%3BCATEGORIES%3BORGANIZATIONS%3BPOSTING_DATES%3BFLEX_FIELDS,limit=25,locationId=300000134782977,sortBy=POSTING_DATES_DESC"
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, timeout=30)
+    r.raise_for_status()
 
     job_listings = r.json()["items"][0]["requisitionList"]
 
@@ -43,7 +44,7 @@ def ipsos():
     try:
         with open(f'{FILE_PATH}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {} 
 
     # store current state of job postings for next execution

@@ -13,7 +13,9 @@ def gfk():
     PARSE AND SCRAPE WEBPAGES FOR CURRENT JOB POSTINGS
     """
     # get and parse webpage
-    r = requests.get('https://www.gfk.com/careers/search-for-jobs?country_codes29=country_codesUS').text
+    r = requests.get('https://www.gfk.com/careers/search-for-jobs?country_codes29=country_codesUS', timeout=30)
+    r.raise_for_status()
+    r = r.text
     soup = BeautifulSoup(r, 'html.parser')
     jobs = soup.find_all('a', class_='job_item')
 
@@ -42,7 +44,7 @@ def gfk():
     try:
         with open(f'websites/{company_name}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {} 
 
     # store current state of job postings for next execution
@@ -60,4 +62,4 @@ def gfk():
     if new_jobs:
         return {job: current_jobs_dict[job] for job in new_jobs}
     else:
-        return None
+        return []

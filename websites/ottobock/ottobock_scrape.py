@@ -15,7 +15,8 @@ def ottobock():
     # get and parse webpage
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"}
     url = "https://jobs.ottobock.com/search/?searchby=location&locationsearch=Berlin&locale=de_DE"
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, timeout=30)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
     
     n_jobs = soup.find("span", class_="paginationLabel").text.split(" ")[-1]
@@ -52,7 +53,7 @@ def ottobock():
     try:
         with open(f'{FILE_PATH}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {} 
 
     # store current state of job postings for next execution

@@ -16,7 +16,8 @@ def internshala():
     # User-Agent is required — Internshala blocks default requests headers
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"}
     url = "https://internshala.com/internships/computer-science-internship"
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, timeout=30)
+    r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
 
     job_listings = soup.find_all("div", class_="individual_internship")
@@ -77,7 +78,7 @@ def internshala():
     try:
         with open(f'{FILE_PATH}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {}
 
     # store current state of internship postings for next execution

@@ -14,6 +14,9 @@ class FakeResponse:
     </div>
     """
 
+    def raise_for_status(self):
+        pass
+
 
 def test_internshala_parses_listing_and_reports_it_only_once(monkeypatch, tmp_path):
     monkeypatch.setattr(requests, "get", lambda *args, **kwargs: FakeResponse())

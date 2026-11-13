@@ -11,7 +11,9 @@ def wtw():
     PARSE AND SCRAPE WEBPAGES FOR CURRENT JOB POSTINGS
     """
     # get and parse webpage
-    r = requests.get('https://jobsapi-internal.m-cloud.io/api/job?callback=jobsCallback&latitude=42.3600825&longitude=-71.0588801&LocationRadius=25&Limit=40&Organization=2045&offset=1').text
+    r = requests.get('https://jobsapi-internal.m-cloud.io/api/job?callback=jobsCallback&latitude=42.3600825&longitude=-71.0588801&LocationRadius=25&Limit=40&Organization=2045&offset=1', timeout=30)
+    r.raise_for_status()
+    r = r.text
     # returns job postings in JSON format, but wrapped in 'jobsCallback(...)' which needs to be removed
     r_json_ready = r[:-1].replace('jobsCallback(', '')
     r_json = json.loads(r_json_ready)
@@ -41,7 +43,7 @@ def wtw():
     try:
         with open(f'websites/{company_name}/{company_name}_current_jobs_dict.pkl', 'rb') as f:
             saved_jobs_dict = pickle.load(f)
-    except FileNotFoundError:
+    except (OSError, EOFError, pickle.UnpicklingError, AttributeError, ImportError):
         saved_jobs_dict = {} 
 
     # store current state of job postings for next execution
@@ -59,4 +61,4 @@ def wtw():
     if new_jobs:
         return {job: current_jobs_dict[job] for job in new_jobs}
     else:
-        return None
+        return []
